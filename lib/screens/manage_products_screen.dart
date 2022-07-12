@@ -13,7 +13,7 @@ class ManageProductsScreen extends StatelessWidget {
   static const routeName = '/manage-products';
 
   Future<void> refreshProducts(BuildContext context) async {
-    await Provider.of<Products>(context).getProductsFromFirebase();
+    await Provider.of<Products>(context, listen: false).getProductsFromFirebase();
   }
 
   @override
