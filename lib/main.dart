@@ -30,30 +30,35 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<Auth>(
-        create: (ctx) => Auth(),
-      ),
+          create: (ctx) => Auth(),
+        ),
         ChangeNotifierProvider<Products>(
-        create: (ctx) => Products(),
-      ),
-      ChangeNotifierProvider<Cart>(
-        create: (ctx) => Cart(),
-      ),
-      ChangeNotifierProvider<Orders>(
-        create: (ctx) => Orders(),
-      ),
+          create: (ctx) => Products(),
+        ),
+        ChangeNotifierProvider<Cart>(
+          create: (ctx) => Cart(),
+        ),
+        ChangeNotifierProvider<Orders>(
+          create: (ctx) => Orders(),
+        ),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        theme: theme,
-        home: const AuthScreen(),
-        routes: {
-          HomeScreen.routeName:(context) => const HomeScreen(),
-          ProductDetailsScreen.routeName: (ctx) => const ProductDetailsScreen(),
-          CartScreen.routeName: (ctx) => const CartScreen(),
-          OrdersScreen.routeName: (ctx) => const OrdersScreen(),
-          ManageProductsScreen.routeName: (ctx) => const ManageProductsScreen(),
-          EditProductScreen.routeName: (ctx) => const EditProductScreen(),
-
+      child: Consumer<Auth>(
+        builder: (ctx, authData, child) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            theme: theme,
+            home: authData.isAuth ? const HomeScreen() : const AuthScreen(),
+            routes: {
+              HomeScreen.routeName: (context) => const HomeScreen(),
+              ProductDetailsScreen.routeName: (ctx) =>
+                  const ProductDetailsScreen(),
+              CartScreen.routeName: (ctx) => const CartScreen(),
+              OrdersScreen.routeName: (ctx) => const OrdersScreen(),
+              ManageProductsScreen.routeName: (ctx) =>
+                  const ManageProductsScreen(),
+              EditProductScreen.routeName: (ctx) => const EditProductScreen(),
+            },
+          );
         },
       ),
     );

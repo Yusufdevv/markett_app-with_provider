@@ -132,7 +132,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
           await Provider.of<Products>(context, listen: false)
               .addProduct(_product);
         } catch (error) {
-          await showDialog<Null>(
+          await showDialog<void>(
               context: context,
               builder: (ctx) {
                 return AlertDialog(
@@ -158,7 +158,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
           await Provider.of<Products>(context, listen: false)
               .updateProduct(_product);
         } catch (error) {
-          await showDialog<Null>(
+          await showDialog<void>(
               context: context,
               builder: (ctx) {
                 return AlertDialog(

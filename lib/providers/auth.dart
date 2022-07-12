@@ -6,10 +6,25 @@ import 'package:markett_app/services/http_exception.dart';
 
 class Auth with ChangeNotifier {
   String? _token;
-  DateTime? expiryDate;
+  DateTime? _expiryDate;
   String? _userId;
 
   static const apiKey = 'AIzaSyALjD8MMpFIICnYDgTtuTTrIMTMAtVcr8U';
+
+  bool get isAuth {
+    return _token != null;
+  }
+
+  String? get token {
+    if (_expiryDate != null &&
+        _expiryDate!.isAfter(DateTime.now()) &&
+        _token != null) {
+      // token mavjud
+      return _token;
+    }
+    // token mavjud emas
+    return null;
+  }
 
   Future<void> _authenticate(
       String email, String password, String urlSegment) async {
@@ -27,10 +42,19 @@ class Auth with ChangeNotifier {
         ),
       );
       final data = jsonDecode(response.body);
-      if(data['error'] != null) {
+      if (data['error'] != null) {
         throw HttpException(data['error']['message']);
       }
-      print(jsonDecode(response.body));
+      _token = data['idToken'];
+      _expiryDate = DateTime.now().add(
+        Duration(
+          seconds: int.parse(
+            data['expiresIn'],
+          ),
+        ),
+      );
+      _userId = data['localId'];
+      notifyListeners();
     } catch (error) {
       rethrow;
     }
