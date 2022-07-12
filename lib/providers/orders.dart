@@ -11,11 +11,17 @@ class Orders with ChangeNotifier {
   List<Order> get items {
     return [..._items];
   }
+
+  String? _authToken;
+
+  void setParams(String authToken) {
+    _authToken = authToken;
+  }
   
 
   Future<void> getOrdersFromFirebase() async {
     final url = Uri.parse(
-        "https://online-magazin-e3ce2-default-rtdb.firebaseio.com/orders.json");
+        "https://online-magazin-e3ce2-default-rtdb.firebaseio.com/orders.json?auth=$_authToken");
 
     try {
       final response = await http.get(url);
@@ -54,7 +60,7 @@ class Orders with ChangeNotifier {
 
   Future<void> addToOrders(List<CartItem> products, double totalPrice) async {
     final url = Uri.parse(
-        "https://online-magazin-e3ce2-default-rtdb.firebaseio.com/orders.json");
+        "https://online-magazin-e3ce2-default-rtdb.firebaseio.com/orders.json?auth=$_authToken");
 
 
     try {

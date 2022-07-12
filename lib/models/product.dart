@@ -20,10 +20,10 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  Future<void> toggleFavorite() async {
+  Future<void> toggleFavorite(String token) async {
     var oldFavorite = isFavorite;
     final url = Uri.parse(
-        "https://online-magazin-e3ce2-default-rtdb.firebaseio.com/products/$id.json");
+        "https://online-magazin-e3ce2-default-rtdb.firebaseio.com/products/$id.json?auth=$token");
 
     isFavorite = !isFavorite;
     notifyListeners();

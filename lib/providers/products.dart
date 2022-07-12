@@ -73,6 +73,7 @@ class Products with ChangeNotifier {
               description: productData["description"],
               price: productData["price"],
               imageUrl: productData["imageUrl"],
+              isFavorite: productData["isFavorite"],
             ),
           );
         });
@@ -86,7 +87,7 @@ class Products with ChangeNotifier {
 
   Future<void> addProduct(Product product) async {
     final url = Uri.parse(
-        "https://online-magazin-e3ce2-default-rtdb.firebaseio.com/products.json");
+        "https://online-magazin-e3ce2-default-rtdb.firebaseio.com/products.json?auth=$_authToken");
 
     try {
       final response = await http.post(
@@ -124,7 +125,7 @@ class Products with ChangeNotifier {
         _list.indexWhere((product) => product.id == updateProduct.id);
     if (productIndex >= 0) {
       final url = Uri.parse(
-          "https://online-magazin-e3ce2-default-rtdb.firebaseio.com/products/${updateProduct.id}.json");
+          "https://online-magazin-e3ce2-default-rtdb.firebaseio.com/products/${updateProduct.id}.json?auth=$_authToken");
 
       try {
         await http.patch(
@@ -150,7 +151,7 @@ class Products with ChangeNotifier {
 
   Future<void> deleteProduct(String id) async {
     final url = Uri.parse(
-        "https://online-magazin-e3ce2-default-rtdb.firebaseio.com/products/$id.json");
+        "https://online-magazin-e3ce2-default-rtdb.firebaseio.com/products/$id.json?auth=$_authToken");
     try {
       var deletingProduct = _list.firstWhere((product) => product.id == id);
       final productIndex = _list.indexWhere((product) => product.id == id);
