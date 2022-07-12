@@ -20,19 +20,19 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  Future<void> toggleFavorite(String token) async {
+  Future<void> toggleFavorite(String token, String userId) async {
     var oldFavorite = isFavorite;
     final url = Uri.parse(
-        "https://online-magazin-e3ce2-default-rtdb.firebaseio.com/products/$id.json?auth=$token");
+        "https://online-magazin-e3ce2-default-rtdb.firebaseio.com/userFavorites/$userId/$id.json?auth=$token");
 
     isFavorite = !isFavorite;
     notifyListeners();
 
     try {
-      final response = await http.patch(
+      final response = await http.put(
         url,
         body: jsonEncode(
-          {'isFavorite': isFavorite},
+           isFavorite,
         ),
       );
       if (response.statusCode >= 400) {
