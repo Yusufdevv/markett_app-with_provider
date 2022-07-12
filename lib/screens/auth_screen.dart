@@ -34,7 +34,7 @@ class _AuthScreenState extends State<AuthScreen> {
             content: Text(errorMessage),
             actions: [
               TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
+                  onPressed: () => Navigator.of(ctx).pop(),
                   child: const Text("OKEY"))
             ],
           );
@@ -50,7 +50,7 @@ class _AuthScreenState extends State<AuthScreen> {
       try {
         if (_authMode == AuthMode.Login) {
           // login user
-          Provider.of<Auth>(context, listen: false)
+        await  Provider.of<Auth>(context, listen: false)
               .login(_authData['email']!, _authData['password']!);
         } else {
           // register user
