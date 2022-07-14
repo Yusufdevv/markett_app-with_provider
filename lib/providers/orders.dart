@@ -13,19 +13,20 @@ class Orders with ChangeNotifier {
   }
 
   String? _authToken;
+  String? _userId;
 
-  void setParams(String authToken) {
+  void setParams(String? authToken, String? userId) {
     _authToken = authToken;
+    _userId = userId;
   }
-  
 
   Future<void> getOrdersFromFirebase() async {
     final url = Uri.parse(
-        "https://online-magazin-e3ce2-default-rtdb.firebaseio.com/orders.json?auth=$_authToken");
+        "https://online-magazin-e3ce2-default-rtdb.firebaseio.com/orders/$_userId.json?auth=$_authToken");
 
     try {
       final response = await http.get(url);
-      if(jsonDecode(response.body) == null) {
+      if (jsonDecode(response.body) == null) {
         return;
       }
       final data = jsonDecode(response.body) as Map<String, dynamic>;
@@ -54,14 +55,14 @@ class Orders with ChangeNotifier {
       _items = loadedOrders;
       notifyListeners();
     } catch (error) {
+      print(error);
       rethrow;
     }
   }
 
   Future<void> addToOrders(List<CartItem> products, double totalPrice) async {
     final url = Uri.parse(
-        "https://online-magazin-e3ce2-default-rtdb.firebaseio.com/orders.json?auth=$_authToken");
-
+        "https://online-magazin-e3ce2-default-rtdb.firebaseio.com/orders/$_userId.json?auth=$_authToken");
 
     try {
       final response = await http.post(

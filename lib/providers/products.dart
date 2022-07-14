@@ -46,7 +46,7 @@ class Products with ChangeNotifier {
   String? _authToken;
   String? _userId;
 
-  void setParams(String authToken, String userId) {
+  void setParams(String? authToken, String? userId) {
     _authToken = authToken;
     _userId = userId;
   }
@@ -59,9 +59,11 @@ class Products with ChangeNotifier {
     return _list.where((product) => product.isFavorite).toList();
   }
 
-  Future<void> getProductsFromFirebase() async {
+  Future<void> getProductsFromFirebase([bool filterByUser = false]) async {
+    final filterString = filterByUser ? "orderBy='creatorId'&equalTo='$_userId'" : '';
     final url = Uri.parse(
-        "https://online-magazin-e3ce2-default-rtdb.firebaseio.com/products.json?auth=$_authToken");
+      "https://online-magazin-e3ce2-default-rtdb.firebaseio.com/products.json?auth=$_authToken&$filterString",
+    );
 
     try {
       final response = await http.get(url);
@@ -109,6 +111,7 @@ class Products with ChangeNotifier {
             "description": product.description,
             "price": product.price,
             "imageUrl": product.imageUrl,
+            "creatorId": _userId,
           },
         ),
       );

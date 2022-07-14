@@ -13,12 +13,13 @@ class ManageProductsScreen extends StatelessWidget {
   static const routeName = '/manage-products';
 
   Future<void> refreshProducts(BuildContext context) async {
-    await Provider.of<Products>(context, listen: false).getProductsFromFirebase();
+    await Provider.of<Products>(context, listen: false)
+        .getProductsFromFirebase(true);
   }
 
   @override
   Widget build(BuildContext context) {
-    final productsProvider = Provider.of<Products>(context);
+    // final productsProvider = Provider.of<Products>(context);
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -26,24 +27,40 @@ class ManageProductsScreen extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () =>
-                  Navigator.of(context).pushNamed(EditProductScreen.routeName),
+                Navigator.of(context).pushNamed(EditProductScreen.routeName),
             icon: const Icon(Icons.add),
           ),
         ],
       ),
       drawer: const AppDrawer(),
-      body: RefreshIndicator(
-        onRefresh: () => refreshProducts(context),
-        child: ListView.builder(
-          padding: const EdgeInsets.all(16),
-          itemCount: productsProvider.list.length,
-          itemBuilder: (ctx, i) {
-            final product = productsProvider.list[i];
-          return ChangeNotifierProvider.value(
-            value: product,
-            child:const UserPrdouctsList());
-        }  ),
-      )
+      body: FutureBuilder(
+        future: refreshProducts(context),
+        builder: (ctx, snapshotData) {
+          if (snapshotData.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshotData.connectionState == ConnectionState.done) {
+            return RefreshIndicator(
+              onRefresh: () => refreshProducts(context),
+              child: Consumer<Products>(
+                builder: (c,productsProvider, _ ) {
+                  return ListView.builder(
+                      padding: const EdgeInsets.all(16),
+                      itemCount: productsProvider.list.length,
+                      itemBuilder: (ctx, i) {
+                        final product = productsProvider.list[i];
+                        return ChangeNotifierProvider.value(
+                            value: product, child: const UserPrdouctsList());
+                      });
+                }
+              ),
+            );
+          } else {
+           return const Center(child: Text("Xatolik sodir bo'ldi"),);
+          }
+        },
+      ),
     );
   }
 }
