@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ class Auth with ChangeNotifier {
   String? _token;
   DateTime? _expiryDate;
   String? _userId;
+  Timer? _autoLogoutTimer;
 
   static const apiKey = 'AIzaSyALjD8MMpFIICnYDgTtuTTrIMTMAtVcr8U';
 
@@ -58,6 +60,7 @@ class Auth with ChangeNotifier {
         ),
       );
       _userId = data['localId'];
+      _autoLogout();
       notifyListeners();
     } catch (error) {
       rethrow;
@@ -77,5 +80,17 @@ class Auth with ChangeNotifier {
     _userId = null;
     _expiryDate = null;
     notifyListeners();
+    if (_autoLogoutTimer != null) {
+      _autoLogoutTimer!.cancel();
+      _autoLogoutTimer = null;
     }
+  }
+
+  void _autoLogout() {
+    if (_autoLogoutTimer != null) {
+      _autoLogoutTimer!.cancel();
+    }
+    final timeToExpiry = _expiryDate!.difference(DateTime.now()).inSeconds;
+    _autoLogoutTimer = Timer(Duration(seconds: timeToExpiry), logout);
+  }
 }

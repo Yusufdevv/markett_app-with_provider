@@ -45,14 +45,14 @@ class ManageProductsScreen extends StatelessWidget {
               onRefresh: () => refreshProducts(context),
               child: Consumer<Products>(
                 builder: (c,productsProvider, _ ) {
-                  return ListView.builder(
+                  return productsProvider.list.isNotEmpty ? ListView.builder(
                       padding: const EdgeInsets.all(16),
                       itemCount: productsProvider.list.length,
                       itemBuilder: (ctx, i) {
                         final product = productsProvider.list[i];
                         return ChangeNotifierProvider.value(
                             value: product, child: const UserPrdouctsList());
-                      });
+                      }) : const Center(child: Text("Maxsulotlaringiz mavjud emas"),);
                 }
               ),
             );
