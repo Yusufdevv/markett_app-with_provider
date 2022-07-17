@@ -5,8 +5,8 @@ import 'package:provider/provider.dart';
 import '../screens/edit_products_screen.dart';
 import '../models/product.dart';
 
-class UserPrdouctsList extends StatelessWidget {
-  const UserPrdouctsList({Key? key}) : super(key: key);
+class UserProductsItem extends StatelessWidget {
+  const UserProductsItem({Key? key}) : super(key: key);
 
   void notifyUserAboutDelete(BuildContext context, Function() removeItem) {
     showDialog(
@@ -64,6 +64,7 @@ class UserPrdouctsList extends StatelessWidget {
               ),
             ),
             IconButton(
+              splashRadius: 20,
               onPressed: () {
                 notifyUserAboutDelete(context, () async {
                   try {

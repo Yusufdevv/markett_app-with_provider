@@ -60,16 +60,17 @@ class Products with ChangeNotifier {
   }
 
   Future<void> getProductsFromFirebase([bool filterByUser = false]) async {
-    final filterString = filterByUser ? "orderBy='creatorId'&equalTo='$_userId'" : '';
+    final filterString =
+        filterByUser ? 'orderBy="creatorId"&equalTo="$_userId"' : '';
     final url = Uri.parse(
-      "https://online-magazin-e3ce2-default-rtdb.firebaseio.com/products.json?auth=$_authToken&$filterString",
-    );
+        'https://online-magazin-e3ce2-default-rtdb.firebaseio.com/products.json?auth=$_authToken&$filterString');
 
     try {
       final response = await http.get(url);
+
       if (jsonDecode(response.body) != null) {
         final favoriteUrl = Uri.parse(
-            "https://online-magazin-e3ce2-default-rtdb.firebaseio.com/userFavorites/$_userId.json?auth=$_authToken");
+            'https://online-magazin-e3ce2-default-rtdb.firebaseio.com/userFavorites/$_userId.json?auth=$_authToken');
 
         final favoriteResponse = await http.get(favoriteUrl);
         final favoriteData = jsonDecode(favoriteResponse.body);
@@ -77,41 +78,40 @@ class Products with ChangeNotifier {
         final data = jsonDecode(response.body) as Map<String, dynamic>;
         final List<Product> loadedProducts = [];
         data.forEach((productId, productData) {
-          loadedProducts.add(
-            Product(
-              id: productId,
-              title: productData["title"],
-              description: productData["description"],
-              price: productData["price"],
-              imageUrl: productData["imageUrl"],
-              isFavorite: favoriteData == null
-                  ? false
-                  : favoriteData[productId] ?? false,
-            ),
-          );
+          loadedProducts.add(Product(
+            id: productId,
+            title: productData['title'],
+            description: productData['description'],
+            price: productData['price'],
+            imageUrl: productData['imageUrl'],
+            isFavorite:
+                favoriteData == null ? false : favoriteData[productId] ?? false,
+          ));
         });
+
         _list = loadedProducts;
         notifyListeners();
       }
-    } catch (error) {
+    } catch (e) {
       rethrow;
     }
   }
 
   Future<void> addProduct(Product product) async {
+    //http formula = Http Endpoint(url) + http so'rovi = natija
     final url = Uri.parse(
-        "https://online-magazin-e3ce2-default-rtdb.firebaseio.com/products.json?auth=$_authToken");
+        'https://online-magazin-e3ce2-default-rtdb.firebaseio.com/products.json?auth=$_authToken');
 
     try {
       final response = await http.post(
         url,
         body: jsonEncode(
           {
-            "title": product.title,
-            "description": product.description,
-            "price": product.price,
-            "imageUrl": product.imageUrl,
-            "creatorId": _userId,
+            'title': product.title,
+            'description': product.description,
+            'price': product.price,
+            'imageUrl': product.imageUrl,
+            'creatorId': _userId,
           },
         ),
       );
@@ -134,37 +134,36 @@ class Products with ChangeNotifier {
   }
 
   Future<void> updateProduct(Product updateProduct) async {
-    final productIndex =
-        _list.indexWhere((product) => product.id == updateProduct.id);
+    final productIndex = _list.indexWhere(
+      (product) => product.id == updateProduct.id,
+    );
     if (productIndex >= 0) {
       final url = Uri.parse(
-          "https://online-magazin-e3ce2-default-rtdb.firebaseio.com/products/${updateProduct.id}.json?auth=$_authToken");
-
+          'https://online-magazin-e3ce2-default-rtdb.firebaseio.com/products/${updateProduct.id}.json?auth=$_authToken');
       try {
         await http.patch(
           url,
-          body: jsonEncode({
-            'title': updateProduct.title,
-            'description': updateProduct.description,
-            'price': updateProduct.price,
-            'imageUrl': updateProduct.imageUrl,
-          }),
+          body: jsonEncode(
+            {
+              'title': updateProduct.title,
+              'description': updateProduct.description,
+              'price': updateProduct.price,
+              'imageUrl': updateProduct.imageUrl,
+            },
+          ),
         );
         _list[productIndex] = updateProduct;
         notifyListeners();
-      } catch (error) {
+      } catch (e) {
         rethrow;
       }
     }
   }
 
-  Product findById(String productId) {
-    return _list.firstWhere((product) => product.id == productId);
-  }
-
   Future<void> deleteProduct(String id) async {
     final url = Uri.parse(
-        "https://online-magazin-e3ce2-default-rtdb.firebaseio.com/products/$id.json?auth=$_authToken");
+        'https://online-magazin-e3ce2-default-rtdb.firebaseio.com/products/$id.json?auth=$_authToken');
+    
     try {
       var deletingProduct = _list.firstWhere((product) => product.id == id);
       final productIndex = _list.indexWhere((product) => product.id == id);
@@ -172,6 +171,7 @@ class Products with ChangeNotifier {
       notifyListeners();
 
       final response = await http.delete(url);
+
       if (response.statusCode >= 400) {
         _list.insert(productIndex, deletingProduct);
         notifyListeners();
@@ -181,5 +181,8 @@ class Products with ChangeNotifier {
       rethrow;
     }
   }
+
+  Product findById(String productId) {
+    return _list.firstWhere((product) => product.id == productId);
+  }
 }
-// https://www.ixbt.com/img/n1/news/2021/9/0/FBlmFlnX0AIbDre_large.jpg

@@ -22,7 +22,7 @@ class Orders with ChangeNotifier {
 
   Future<void> getOrdersFromFirebase() async {
     final url = Uri.parse(
-        "https://online-magazin-e3ce2-default-rtdb.firebaseio.com/orders/$_userId.json?auth=$_authToken");
+        'https://online-magazin-e3ce2-default-rtdb.firebaseio.com/orders/$_userId.json?auth=$_authToken');
 
     try {
       final response = await http.get(url);
@@ -55,7 +55,6 @@ class Orders with ChangeNotifier {
       _items = loadedOrders;
       notifyListeners();
     } catch (error) {
-      print(error);
       rethrow;
     }
   }
