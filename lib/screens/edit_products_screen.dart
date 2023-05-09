@@ -84,6 +84,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
                   } else if (!value.startsWith('http')) {
                     return "Iltimos, to'g'ri URL yozing";
                   }
+
                   return null;
                 },
               ),

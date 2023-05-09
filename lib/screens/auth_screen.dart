@@ -50,7 +50,7 @@ class _AuthScreenState extends State<AuthScreen> {
       try {
         if (_authMode == AuthMode.Login) {
           // login user
-        await  Provider.of<Auth>(context, listen: false)
+          await Provider.of<Auth>(context, listen: false)
               .login(_authData['email']!, _authData['password']!);
         } else {
           // register user
@@ -62,13 +62,13 @@ class _AuthScreenState extends State<AuthScreen> {
       } on HttpException catch (error) {
         var errorMessage = "Xatolik sodir bo'ldi!";
         if (error.message.contains('EMAIL_EXISTS')) {
-          errorMessage = "BU email band.";
+          errorMessage = "Bu email band.";
         } else if (error.message.contains('INVALID_EMAIL')) {
           errorMessage = "Noto'g'ri email kiritdingiz";
         } else if (error.message.contains('WEAK_PASSWORD')) {
           errorMessage = "Juda oson parol";
         } else if (error.message.contains('EMAIL_NOT_FOUND')) {
-          errorMessage = "BU email bilan foydalanuvchi topilmadi.";
+          errorMessage = "Bu email bilan foydalanuvchi topilmadi.";
         } else if (error.message.contains('INVALID_PASSWORD')) {
           errorMessage = "Parol noto'g'ri.";
         }
